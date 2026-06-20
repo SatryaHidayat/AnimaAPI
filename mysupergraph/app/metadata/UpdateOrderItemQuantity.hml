@@ -1,0 +1,34 @@
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateOrderItemQuantity
+  outputType: OrderPayload!
+  arguments:
+    - name: itemId
+      type: ID!
+    - name: orderId
+      type: ID!
+    - name: quantity
+      type: Int!
+  source:
+    dataConnectorName: my_connector
+    dataConnectorCommand:
+      procedure: updateOrderItemQuantity
+    argumentMapping:
+      itemId: item_id
+      orderId: order_id
+      quantity: quantity
+  graphql:
+    rootFieldName: updateOrderItemQuantity
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateOrderItemQuantity
+  permissions:
+    - role: admin
+      allowExecution: true
+

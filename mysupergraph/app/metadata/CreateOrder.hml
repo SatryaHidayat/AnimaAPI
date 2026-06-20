@@ -1,0 +1,104 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreateOrderItemInput
+  fields:
+    - name: productId
+      type: ID!
+    - name: quantity
+      type: Int!
+  graphql:
+    typeName: CreateOrderItemInput
+    inputTypeName: CreateOrderItemInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_connector
+      dataConnectorObjectType: CreateOrderItemInput
+      fieldMapping:
+        productId:
+          column:
+            name: product_id
+        quantity:
+          column:
+            name: quantity
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreateOrderItemInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - productId
+          - quantity
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: CreateOrderInput
+  fields:
+    - name: items
+      type: "[CreateOrderItemInput!]!"
+    - name: notes
+      type: String
+    - name: userId
+      type: ID!
+  graphql:
+    typeName: CreateOrderInput
+    inputTypeName: CreateOrderInputInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_connector
+      dataConnectorObjectType: CreateOrderInput
+      fieldMapping:
+        items:
+          column:
+            name: items
+        notes:
+          column:
+            name: notes
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: CreateOrderInput
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - items
+          - notes
+          - userId
+
+---
+kind: Command
+version: v1
+definition:
+  name: CreateOrder
+  outputType: OrderPayload!
+  arguments:
+    - name: input
+      type: CreateOrderInput!
+  source:
+    dataConnectorName: my_connector
+    dataConnectorCommand:
+      procedure: createOrder
+  graphql:
+    rootFieldName: createOrder
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: CreateOrder
+  permissions:
+    - role: admin
+      allowExecution: true
+

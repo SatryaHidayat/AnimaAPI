@@ -1,0 +1,116 @@
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: my_connector
+  dataConnectorScalarType: ID
+  representation: ID
+  graphql:
+    comparisonExpressionTypeName: IdComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Timestamptz
+  graphql:
+    typeName: Timestamptz
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: DateTimeBoolExp
+  operand:
+    scalar:
+      type: Timestamptz
+      comparisonOperators: []
+      dataConnectorOperatorMapping:
+        - dataConnectorName: my_connector
+          dataConnectorScalarType: DateTime
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: DateTimeBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: my_connector
+  dataConnectorScalarType: DateTime
+  representation: Timestamptz
+  graphql:
+    comparisonExpressionTypeName: TimestamptzComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: my_connector
+  dataConnectorScalarType: Float
+  representation: Float
+  graphql:
+    comparisonExpressionTypeName: FloatComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: my_connector
+  dataConnectorScalarType: String
+  representation: String
+  graphql:
+    comparisonExpressionTypeName: StringComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: my_connector
+  dataConnectorScalarType: Int
+  representation: Int
+  graphql:
+    comparisonExpressionTypeName: IntComparisonExp
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: Enum
+  graphql:
+    typeName: Enum
+
+---
+kind: BooleanExpressionType
+version: v1
+definition:
+  name: OrderStatusBoolExp
+  operand:
+    scalar:
+      type: Enum
+      comparisonOperators: []
+      dataConnectorOperatorMapping:
+        - dataConnectorName: my_connector
+          dataConnectorScalarType: OrderStatus
+          operatorMapping: {}
+  logicalOperators:
+    enable: true
+  isNull:
+    enable: true
+  graphql:
+    typeName: OrderStatusBoolExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: my_connector
+  dataConnectorScalarType: OrderStatus
+  representation: Enum
+  graphql:
+    comparisonExpressionTypeName: EnumComparisonExp
+

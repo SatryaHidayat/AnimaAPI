@@ -1,0 +1,208 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: OrderItem
+  fields:
+    - name: createdAt
+      type: Timestamptz
+    - name: id
+      type: ID!
+    - name: orderId
+      type: ID!
+    - name: price
+      type: Float!
+    - name: productId
+      type: ID!
+    - name: productName
+      type: String!
+    - name: quantity
+      type: Int!
+    - name: subtotal
+      type: Float!
+    - name: updatedAt
+      type: Timestamptz
+  graphql:
+    typeName: OrderItem
+    inputTypeName: OrderItemInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_connector
+      dataConnectorObjectType: OrderItem
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        id:
+          column:
+            name: id
+        orderId:
+          column:
+            name: order_id
+        price:
+          column:
+            name: price
+        productId:
+          column:
+            name: product_id
+        productName:
+          column:
+            name: product_name
+        quantity:
+          column:
+            name: quantity
+        subtotal:
+          column:
+            name: subtotal
+        updatedAt:
+          column:
+            name: updated_at
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: OrderItem
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - id
+          - orderId
+          - price
+          - productId
+          - productName
+          - quantity
+          - subtotal
+          - updatedAt
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: Order
+  fields:
+    - name: createdAt
+      type: Timestamptz
+    - name: id
+      type: ID!
+    - name: items
+      type: "[OrderItem!]!"
+    - name: notes
+      type: String
+    - name: status
+      type: Enum!
+    - name: totalPrice
+      type: Float!
+    - name: updatedAt
+      type: Timestamptz
+    - name: userId
+      type: ID!
+  graphql:
+    typeName: Order
+    inputTypeName: OrderInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_connector
+      dataConnectorObjectType: Order
+      fieldMapping:
+        createdAt:
+          column:
+            name: created_at
+        id:
+          column:
+            name: id
+        items:
+          column:
+            name: items
+        notes:
+          column:
+            name: notes
+        status:
+          column:
+            name: status
+        totalPrice:
+          column:
+            name: total_price
+        updatedAt:
+          column:
+            name: updated_at
+        userId:
+          column:
+            name: user_id
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: Order
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - createdAt
+          - id
+          - items
+          - notes
+          - status
+          - totalPrice
+          - updatedAt
+          - userId
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: OrderPayload
+  fields:
+    - name: data
+      type: Order
+    - name: message
+      type: String!
+    - name: status
+      type: String!
+  graphql:
+    typeName: OrderPayload
+    inputTypeName: OrderPayloadInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_connector
+      dataConnectorObjectType: OrderPayload
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: OrderPayload
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - data
+          - message
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: Order
+  outputType: OrderPayload!
+  arguments:
+    - name: id
+      type: ID!
+  source:
+    dataConnectorName: my_connector
+    dataConnectorCommand:
+      function: order
+  graphql:
+    rootFieldName: order
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: Order
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,378 @@
+kind: DataConnectorLink
+version: v1
+definition:
+  name: my_connector
+  url:
+    readWriteUrls:
+      read:
+        valueFromEnv: APP_MY_CONNECTOR_READ_URL
+      write:
+        valueFromEnv: APP_MY_CONNECTOR_WRITE_URL
+  headers:
+    Authorization:
+      valueFromEnv: APP_MY_CONNECTOR_AUTHORIZATION_HEADER
+  schema:
+    version: v0.2
+    schema:
+      capabilities: null
+      collections: []
+      functions:
+        - arguments:
+            id:
+              type:
+                name: ID
+                type: named
+          name: order
+          result_type:
+            name: OrderPayload
+            type: named
+        - arguments: {}
+          name: orders
+          result_type:
+            element_type:
+              name: Order
+              type: named
+            type: array
+        - arguments:
+            user_id:
+              type:
+                name: ID
+                type: named
+          name: ordersByUser
+          result_type:
+            name: OrdersPayload
+            type: named
+      object_types:
+        CreateOrderInput:
+          fields:
+            items:
+              type:
+                element_type:
+                  name: CreateOrderItemInput
+                  type: named
+                type: array
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            user_id:
+              type:
+                name: ID
+                type: named
+          foreign_keys: {}
+        CreateOrderItemInput:
+          fields:
+            product_id:
+              type:
+                name: ID
+                type: named
+            quantity:
+              type:
+                name: Int
+                type: named
+          foreign_keys: {}
+        Order:
+          fields:
+            created_at:
+              type:
+                type: nullable
+                underlying_type:
+                  name: DateTime
+                  type: named
+            id:
+              type:
+                name: ID
+                type: named
+            items:
+              type:
+                element_type:
+                  name: OrderItem
+                  type: named
+                type: array
+            notes:
+              type:
+                type: nullable
+                underlying_type:
+                  name: String
+                  type: named
+            status:
+              type:
+                name: OrderStatus
+                type: named
+            total_price:
+              type:
+                name: Float
+                type: named
+            updated_at:
+              type:
+                type: nullable
+                underlying_type:
+                  name: DateTime
+                  type: named
+            user_id:
+              type:
+                name: ID
+                type: named
+          foreign_keys: {}
+        OrderByClause:
+          description: Allows ordering a list of records.
+          fields:
+            column:
+              description: The column that is used for ordering.
+              type:
+                name: String
+                type: named
+            order:
+              description: The direction that is used for ordering.
+              type:
+                name: SortOrder
+                type: named
+          foreign_keys: {}
+        OrderItem:
+          fields:
+            created_at:
+              type:
+                type: nullable
+                underlying_type:
+                  name: DateTime
+                  type: named
+            id:
+              type:
+                name: ID
+                type: named
+            order_id:
+              type:
+                name: ID
+                type: named
+            price:
+              type:
+                name: Float
+                type: named
+            product_id:
+              type:
+                name: ID
+                type: named
+            product_name:
+              type:
+                name: String
+                type: named
+            quantity:
+              type:
+                name: Int
+                type: named
+            subtotal:
+              type:
+                name: Float
+                type: named
+            updated_at:
+              type:
+                type: nullable
+                underlying_type:
+                  name: DateTime
+                  type: named
+          foreign_keys: {}
+        OrderPayload:
+          fields:
+            data:
+              type:
+                type: nullable
+                underlying_type:
+                  name: Order
+                  type: named
+            message:
+              type:
+                name: String
+                type: named
+            status:
+              type:
+                name: String
+                type: named
+          foreign_keys: {}
+        OrdersPayload:
+          fields:
+            data:
+              type:
+                element_type:
+                  name: Order
+                  type: named
+                type: array
+            message:
+              type:
+                name: String
+                type: named
+            status:
+              type:
+                name: String
+                type: named
+          foreign_keys: {}
+      procedures:
+        - arguments:
+            input:
+              type:
+                name: CreateOrderInput
+                type: named
+          name: createOrder
+          result_type:
+            name: OrderPayload
+            type: named
+        - arguments:
+            id:
+              type:
+                name: ID
+                type: named
+          name: deleteOrder
+          result_type:
+            name: OrderPayload
+            type: named
+        - arguments:
+            item_id:
+              type:
+                name: ID
+                type: named
+            order_id:
+              type:
+                name: ID
+                type: named
+            quantity:
+              type:
+                name: Int
+                type: named
+          name: updateOrderItemQuantity
+          result_type:
+            name: OrderPayload
+            type: named
+        - arguments:
+            id:
+              type:
+                name: ID
+                type: named
+            status:
+              type:
+                name: OrderStatus
+                type: named
+          name: updateOrderStatus
+          result_type:
+            name: OrderPayload
+            type: named
+      request_arguments:
+        mutation_arguments:
+          headers:
+            description: Headers to be merged into original request headers of graphql requests
+            type:
+              type: nullable
+              underlying_type:
+                name: _HeaderMap
+                type: named
+        query_arguments:
+          headers:
+            description: Headers to be merged into original request headers of graphql requests
+            type:
+              type: nullable
+              underlying_type:
+                name: _HeaderMap
+                type: named
+        relational_query_arguments: {}
+      scalar_types:
+        _HeaderMap:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            type: json
+        Boolean:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            type: boolean
+        DateTime:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            type: timestamptz
+        Float:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            type: float64
+        ID:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            type: string
+        Int:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            type: int32
+        OrderByRelationAggregateFunction:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            one_of:
+              - COUNT
+            type: enum
+        OrderByRelationWithColumnAggregateFunction:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            one_of:
+              - AVG
+              - MIN
+              - MAX
+              - SUM
+              - COUNT
+            type: enum
+        OrderStatus:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            one_of:
+              - pending
+              - confirmed
+              - cancelled
+            type: enum
+        SortOrder:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            one_of:
+              - ASC
+              - DESC
+            type: enum
+        String:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            type: string
+        Trashed:
+          aggregate_functions: {}
+          comparison_operators: {}
+          extraction_functions: {}
+          representation:
+            one_of:
+              - ONLY
+              - WITH
+              - WITHOUT
+            type: enum
+    capabilities:
+      capabilities:
+        mutation:
+          explain: {}
+        query:
+          exists: {}
+          explain: {}
+          nested_fields: {}
+          variables: {}
+      version: 0.2.10

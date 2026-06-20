@@ -1,0 +1,13 @@
+{
+  "$schema": "configuration.schema.json",
+  "introspection": {
+    "endpoint": {
+      "valueFromEnv": "GRAPHQL_ENDPOINT"
+    }
+  },
+  "execution": {
+    "endpoint": {
+      "valueFromEnv": "GRAPHQL_ENDPOINT"
+    }
+  }
+}

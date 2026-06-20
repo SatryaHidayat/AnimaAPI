@@ -1,0 +1,28 @@
+---
+kind: Command
+version: v1
+definition:
+  name: UpdateOrderStatus
+  outputType: OrderPayload!
+  arguments:
+    - name: id
+      type: ID!
+    - name: status
+      type: Enum!
+  source:
+    dataConnectorName: my_connector
+    dataConnectorCommand:
+      procedure: updateOrderStatus
+  graphql:
+    rootFieldName: updateOrderStatus
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: UpdateOrderStatus
+  permissions:
+    - role: admin
+      allowExecution: true
+

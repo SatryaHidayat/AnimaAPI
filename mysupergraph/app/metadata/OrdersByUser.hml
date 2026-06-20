@@ -1,0 +1,60 @@
+---
+kind: ObjectType
+version: v1
+definition:
+  name: OrdersPayload
+  fields:
+    - name: data
+      type: "[Order!]!"
+    - name: message
+      type: String!
+    - name: status
+      type: String!
+  graphql:
+    typeName: OrdersPayload
+    inputTypeName: OrdersPayloadInput
+  dataConnectorTypeMapping:
+    - dataConnectorName: my_connector
+      dataConnectorObjectType: OrdersPayload
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: OrdersPayload
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - data
+          - message
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: OrdersByUser
+  outputType: OrdersPayload!
+  arguments:
+    - name: userId
+      type: ID!
+  source:
+    dataConnectorName: my_connector
+    dataConnectorCommand:
+      function: ordersByUser
+    argumentMapping:
+      userId: user_id
+  graphql:
+    rootFieldName: ordersByUser
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: OrdersByUser
+  permissions:
+    - role: admin
+      allowExecution: true
+

@@ -1,0 +1,26 @@
+---
+kind: Command
+version: v1
+definition:
+  name: DeleteOrder
+  outputType: OrderPayload!
+  arguments:
+    - name: id
+      type: ID!
+  source:
+    dataConnectorName: my_connector
+    dataConnectorCommand:
+      procedure: deleteOrder
+  graphql:
+    rootFieldName: deleteOrder
+    rootFieldKind: Mutation
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: DeleteOrder
+  permissions:
+    - role: admin
+      allowExecution: true
+

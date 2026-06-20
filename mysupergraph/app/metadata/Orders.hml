@@ -1,0 +1,23 @@
+---
+kind: Command
+version: v1
+definition:
+  name: Orders
+  outputType: "[Order!]!"
+  source:
+    dataConnectorName: my_connector
+    dataConnectorCommand:
+      function: orders
+  graphql:
+    rootFieldName: orders
+    rootFieldKind: Query
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: Orders
+  permissions:
+    - role: admin
+      allowExecution: true
+
