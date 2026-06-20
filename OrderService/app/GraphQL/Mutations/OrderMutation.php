@@ -134,7 +134,10 @@ class OrderMutation
             return $this->failed('Validation error: ' . $validator->errors()->first());
         }
 
-        $order = Order::find($args['order_id']);
+        $orderId = $args['orderId'] ?? $args['order_id'] ?? null;
+        $itemId = $args['itemId'] ?? $args['item_id'] ?? null;
+
+        $order = Order::find($orderId);
 
         if (! $order) {
             return $this->failed('Order not found');
@@ -144,8 +147,8 @@ class OrderMutation
             return $this->failed('Order tidak dapat diubah karena status bukan pending');
         }
 
-        $item = OrderItem::where('id', $args['item_id'])
-            ->where('order_id', $args['order_id'])
+        $item = OrderItem::where('id', $itemId)
+            ->where('order_id', $orderId)
             ->first();
 
         if (! $item) {
