@@ -227,23 +227,6 @@ definition:
             name: OrderPayload
             type: named
         - arguments:
-            item_id:
-              type:
-                name: ID
-                type: named
-            order_id:
-              type:
-                name: ID
-                type: named
-            quantity:
-              type:
-                name: Int
-                type: named
-          name: updateOrderItemQuantity
-          result_type:
-            name: OrderPayload
-            type: named
-        - arguments:
             id:
               type:
                 name: ID

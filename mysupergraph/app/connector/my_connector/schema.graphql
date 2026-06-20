@@ -41,7 +41,6 @@ scalar Int
 type Mutation {
   createOrder(input: CreateOrderInput!): OrderPayload!
   updateOrderStatus(id: ID!, status: OrderStatus!): OrderPayload!
-  updateOrderItemQuantity(order_id: ID!, item_id: ID!, quantity: Int!): OrderPayload!
   deleteOrder(id: ID!): OrderPayload!
 }
 

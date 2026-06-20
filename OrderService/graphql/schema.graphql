@@ -17,7 +17,6 @@ type Query {
 type Mutation {
     createOrder(input: CreateOrderInput!): OrderPayload! @field(resolver: "App\\GraphQL\\Mutations\\OrderMutation@create")
     updateOrderStatus(id: ID!, status: OrderStatus!): OrderPayload! @field(resolver: "App\\GraphQL\\Mutations\\OrderMutation@updateStatus")
-    updateOrderItemQuantity(order_id: ID!, item_id: ID!, quantity: Int!): OrderPayload! @field(resolver: "App\\GraphQL\\Mutations\\OrderMutation@updateQuantity")
     deleteOrder(id: ID!): OrderPayload! @field(resolver: "App\\GraphQL\\Mutations\\OrderMutation@delete")
 }
 
