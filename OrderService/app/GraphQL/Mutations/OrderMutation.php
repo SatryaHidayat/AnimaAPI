@@ -30,7 +30,7 @@ class OrderMutation
 
         $userResponse = Http::get(env('USER_SERVICE_URL') . '/api/users/' . $input['user_id']);
 
-        if ($userResponse->failed()) {
+        if ($userResponse->failed() || empty($userResponse->json('data'))) {
             return $this->failed('User tidak ditemukan');
         }
 
@@ -40,11 +40,11 @@ class OrderMutation
         foreach ($input['items'] as $item) {
             $productResponse = Http::get(env('PRODUCT_SERVICE_URL') . '/api/products/' . $item['product_id']);
 
-            if ($productResponse->failed()) {
+            $product = $productResponse->json('data');
+
+            if ($productResponse->failed() || empty($product)) {
                 return $this->failed('Produk dengan ID ' . $item['product_id'] . ' tidak ditemukan');
             }
-
-            $product = $productResponse->json('data');
 
             if ($product['stock'] < $item['quantity']) {
                 return $this->failed('Stok produk ' . $product['name'] . ' tidak mencukupi');
@@ -154,11 +154,12 @@ class OrderMutation
 
         $productResponse = Http::get(env('PRODUCT_SERVICE_URL') . '/api/products/' . $item->product_id);
 
-        if ($productResponse->failed()) {
+        $product = $productResponse->json('data');
+
+        if ($productResponse->failed() || empty($product)) {
             return $this->failed('Produk tidak ditemukan');
         }
 
-        $product = $productResponse->json('data');
         $newQuantity = $args['quantity'];
         $difference = $newQuantity - $item->quantity;
 
@@ -169,6 +170,16 @@ class OrderMutation
         DB::beginTransaction();
 
         try {
+            if ($difference > 0) {
+                Http::put(env('PRODUCT_SERVICE_URL') . '/api/products/' . $item->product_id . '/decrease-stock', [
+                    'quantity' => $difference
+                ]);
+            } elseif ($difference < 0) {
+                Http::put(env('PRODUCT_SERVICE_URL') . '/api/products/' . $item->product_id . '/increase-stock', [
+                    'quantity' => abs($difference)
+                ]);
+            }
+
             $item->update([
                 'quantity' => $newQuantity,
                 'subtotal' => $item->price * $newQuantity,

@@ -10,3 +10,4 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource('products', ControllerProducts::class);
 Route::put('/products/{id}/decrease-stock', [ControllerProducts::class, 'decreaseStock']);
+Route::put('/products/{id}/increase-stock', [ControllerProducts::class, 'increaseStock']);

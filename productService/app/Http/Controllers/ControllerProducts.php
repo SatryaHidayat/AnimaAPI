@@ -60,6 +60,40 @@ class ControllerProducts extends Controller
         ]);
     }
 
+    public function increaseStock(Request $request, int $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'Failed',
+                'message' => 'Validation error',
+                'data' => $validator->errors()
+            ], 422);
+        }
+
+        $product = Products::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => 'Failed',
+                'message' => 'Product not found',
+                'data' => null
+            ], 404);
+        }
+
+        $product->increment('stock', $request->quantity);
+        $product->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Stock berhasil ditambahkan',
+            'data' => $product
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
