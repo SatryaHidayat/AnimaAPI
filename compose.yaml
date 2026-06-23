@@ -2,6 +2,9 @@
 # # If you need more help, visit the Docker Compose reference guide at
 # # https://docs.docker.com/go/compose-spec-reference/
 
+include:
+  - path: mysupergraph/compose.yaml
+
 # # Here the instructions define your application as a service called "server".
 # # This service is built from the Dockerfile in the current directory.
 # # You can add other services your application may depend on here, such as a
@@ -18,6 +21,28 @@ services:
       - ./OrderService:/var/www
     networks:
       - iae_network
+  order_worker:
+    build: ./OrderService
+    container_name: order_worker
+    command: php artisan rabbitmq:consume-payment-paid
+    volumes:
+      - ./OrderService:/var/www
+    networks:
+      - iae_network
+    depends_on:
+      - rabbitmq
+      - mysql_server
+  order_queue_worker:
+    build: ./OrderService
+    container_name: order_queue_worker
+    command: php artisan queue:work rabbitmq --queue=order-processing
+    volumes:
+      - ./OrderService:/var/www
+    networks:
+      - iae_network
+    depends_on:
+      - rabbitmq
+      - mysql_server
 
   product-service:
     build: ./productService

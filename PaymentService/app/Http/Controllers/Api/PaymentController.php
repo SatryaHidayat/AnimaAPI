@@ -93,8 +93,8 @@ class PaymentController extends Controller
 
         if ($request->status === 'paid') {
             try {
-                $orderResponse = Http::timeout(5)
-                    ->retry(2, 200)
+                $orderResponse = Http::timeout(60)
+                    ->retry(1, 200)
                     ->put(
                         rtrim(env('ORDER_SERVICE_URL', 'http://order-service:8000'), '/') . '/api/orders/' . $payment->order_id,
                         ['status' => 'paid']
@@ -102,7 +102,7 @@ class PaymentController extends Controller
             } catch (Throwable $exception) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Payment belum diubah karena OrderService tidak dapat dihubungi',
+                    'message' => 'Payment belum diubah karena OrderService tidak dapat dihubungi: ' . $exception->getMessage(),
                 ], 502);
             }
 
@@ -124,7 +124,11 @@ class PaymentController extends Controller
             try {
                 $this->publishPaymentPaid($payment);
             } catch (Throwable $exception) {
-                // Payment tetap berhasil walaupun publish RabbitMQ gagal.
+                \Illuminate\Support\Facades\Log::error('RabbitMQ Publish Failed: ' . $exception->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'RabbitMQ Publish Failed: ' . $exception->getMessage(),
+                ], 500);
             }
         }
 
